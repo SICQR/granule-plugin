@@ -50,17 +50,10 @@ target_compile_definitions(GRANULE PUBLIC
     JUCE_VST3_CAN_REPLACE_VST2=0
 )
 
-find_package(PkgConfig REQUIRED)
-pkg_check_modules(GTK3 REQUIRED gtk+-3.0)
-target_include_directories(GRANULE PRIVATE ${GTK3_INCLUDE_DIRS})
-target_link_directories(GRANULE PRIVATE ${GTK3_LIBRARY_DIRS})
-
 target_link_libraries(GRANULE PRIVATE
-    ${GTK3_LIBRARIES}
     juce::juce_audio_utils
     juce::juce_dsp
     juce::juce_graphics
     juce::juce_gui_basics
     juce::juce_recommended_config_flags
-    juce::juce_recommended_warning_flags
 )
