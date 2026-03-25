@@ -3,16 +3,18 @@
 #
 # TODO: Fix Windows VST3 x64 build when desktop plugin becomes a priority.
 
-name: Build
+name: Build GRANULE
 
 on:
   push:
-    branches: [main]
+    branches: [main, master]
   pull_request:
     branches: [main]
+  workflow_dispatch:
 
 jobs:
   web:
+    name: Web App
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -21,3 +23,42 @@ jobs:
           node-version: 20
       - run: npm ci
       - run: npm run build
+
+  build-macos:
+    name: macOS VST3 (Universal Binary)
+    runs-on: macos-14
+    steps:
+      - uses: actions/checkout@v4
+      - run: brew install cmake ninja
+      - name: Cache JUCE
+        uses: actions/cache@v4
+        with:
+          path: build-mac/_deps
+          key: juce-${{ hashFiles('CMakeLists.txt') }}
+      - run: cmake -B build-mac -G Ninja -DCMAKE_BUILD_TYPE=Release -DCMAKE_OSX_ARCHITECTURES="arm64;x86_64" -DCMAKE_OSX_DEPLOYMENT_TARGET="10.13"
+      - run: cmake --build build-mac --config Release
+      - run: mkdir -p dist && cp -r build-mac/GRANULE_artefacts/Release/VST3/GRANULE.vst3 dist/ && cd dist && zip -r ../GRANULE-macOS.zip .
+      - uses: actions/upload-artifact@v4
+        with:
+          name: GRANULE-macOS
+          path: GRANULE-macOS.zip
+          retention-days: 30
+
+  build-windows:
+    name: Windows VST3 (x64)
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: cmake -B build-win -A x64 -DCMAKE_BUILD_TYPE=Release
+      - run: cmake --build build-win --config Release
+      - shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force -Path dist-win
+          $v = "build-win\GRANULE_artefacts\Release\VST3\GRANULE.vst3"
+          if (Test-Path $v) { Copy-Item -Recurse $v dist-win\ }
+          Compress-Archive -Path dist-win\* -DestinationPath GRANULE-Windows.zip
+      - uses: actions/upload-artifact@v4
+        with:
+          name: GRANULE-Windows
+          path: GRANULE-Windows.zip
+          retention-days: 30
