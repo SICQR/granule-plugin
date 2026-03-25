@@ -2,7 +2,7 @@
  * License manager — Gumroad license key validation + localStorage persistence
  */
 
-const PRODUCT_ID = import.meta.env.VITE_GUMROAD_PRODUCT_ID || 'GRANULE_PLACEHOLDER';
+const PRODUCT_ID = import.meta.env.VITE_GUMROAD_PRODUCT_ID || 'ttupfg';
 const STORAGE_KEY = 'granule_license_v1';
 
 export async function validateKey(licenseKey: string): Promise<boolean> {

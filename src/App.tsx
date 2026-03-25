@@ -82,7 +82,7 @@ function LicenseModal({ onUnlock }: { onUnlock: () => void }) {
 /* ── App Root ────────────────────────────────────────────── */
 export default function App() {
   const [isUnlocked, setIsUnlocked] = useState(false);
-  const [demoSecondsLeft, setDemoSecondsLeft] = useState(30);
+  const [demoSecondsLeft, setDemoSecondsLeft] = useState(180);
   const [showModal, setShowModal] = useState(false);
   const [checking, setChecking] = useState(true);
 
