@@ -59,6 +59,6 @@ jobs:
           Compress-Archive -Path dist-win\* -DestinationPath GRANULE-Windows.zip
       - uses: actions/upload-artifact@v4
         with:
-          name: GRANULE-Windows
+          name: GRANULE-Windows-VST3
           path: GRANULE-Windows.zip
           retention-days: 30
